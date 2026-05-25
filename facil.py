@@ -90,7 +90,9 @@ def guardar_foto_pendiente(nombre_persona, frame):
     fecha_hora = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     nombre_archivo = f"captura_{fecha_hora}.jpg"
     ruta_guardado = os.path.join(carpeta, nombre_archivo)
-    cv2.imwrite(ruta_guardado, frame)
+
+  # cv2.imwrite(ruta_guardado, frame)
+
     print(f"Foto pendiente guardada: {ruta_guardado}")
 
 
@@ -234,8 +236,8 @@ while True:
                     ultimo_tiempo_reconocido = time.time()
 
                     if id_persona not in marcados_en_sesion:
-                        marcar_asistencia(codigo)
-                        marcados_en_sesion.add(codigo)
+                        marcar_asistencia(id_persona)
+                        marcados_en_sesion.add(id_persona)
 
                 else:
                     nombre_mostrar = "Desconocido"
@@ -247,7 +249,7 @@ while True:
                         segundos_desde_ultimo_guardado = time.time() - ultimo_guardado_pendiente
 
                         if segundos_pasados <= 5 and segundos_desde_ultimo_guardado >= 3:
-                           # guardar_foto_pendiente(ultima_persona_reconocida, frame)
+                            guardar_foto_pendiente(ultima_persona_reconocida, frame)
                             ultimo_guardado_pendiente = time.time()
                             nombre_mostrar = f"Pendiente: {ultima_persona_reconocida}"
 
