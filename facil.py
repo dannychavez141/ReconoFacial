@@ -15,8 +15,8 @@ from datetime import datetime
 conexion = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="@Otita2345",
-    database="reconocimiento_facial"
+    password="",
+    database="premiumc_pcoll"
 )
 
 cursor = conexion.cursor(dictionary=True)
@@ -62,7 +62,7 @@ def marcar_asistencia(id_persona):
 
     try:
         sql = """
-        INSERT INTO asistencia (id_persona, fecha, hora, estado)
+        INSERT INTO asist_asistencia (id_persona, fecha, hora, estado)
         VALUES (%s, %s, %s, %s)
         """
 
@@ -90,9 +90,7 @@ def guardar_foto_pendiente(nombre_persona, frame):
     fecha_hora = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     nombre_archivo = f"captura_{fecha_hora}.jpg"
     ruta_guardado = os.path.join(carpeta, nombre_archivo)
-
     cv2.imwrite(ruta_guardado, frame)
-
     print(f"Foto pendiente guardada: {ruta_guardado}")
 
 
@@ -148,10 +146,10 @@ ultimo_guardado_pendiente = 0
 # =========================
 
 # Procesa reconocimiento cada 5 frames para que no se ponga lento
-PROCESAR_CADA_N_FRAMES = 3
+PROCESAR_CADA_N_FRAMES = 5
 
 # Escala 0.35 es balance entre velocidad y detección
-ESCALA = 0.5
+ESCALA = 1
 
 # 1 es más rápido. 2 detecta rostros más pequeños pero es más lento
 UPSAMPLE = 2
@@ -236,8 +234,8 @@ while True:
                     ultimo_tiempo_reconocido = time.time()
 
                     if id_persona not in marcados_en_sesion:
-                        marcar_asistencia(id_persona)
-                        marcados_en_sesion.add(id_persona)
+                        marcar_asistencia(codigo)
+                        marcados_en_sesion.add(codigo)
 
                 else:
                     nombre_mostrar = "Desconocido"
@@ -249,7 +247,7 @@ while True:
                         segundos_desde_ultimo_guardado = time.time() - ultimo_guardado_pendiente
 
                         if segundos_pasados <= 5 and segundos_desde_ultimo_guardado >= 3:
-                            guardar_foto_pendiente(ultima_persona_reconocida, frame)
+                           # guardar_foto_pendiente(ultima_persona_reconocida, frame)
                             ultimo_guardado_pendiente = time.time()
                             nombre_mostrar = f"Pendiente: {ultima_persona_reconocida}"
 
